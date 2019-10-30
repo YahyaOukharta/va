@@ -6,7 +6,7 @@
 /*   By: youkhart <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 03:27:49 by youkhart          #+#    #+#             */
-/*   Updated: 2019/10/30 07:25:07 by youkhart         ###   ########.fr       */
+/*   Updated: 2019/10/30 23:46:55 by youkhart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ char *get_min_width(char *conv, const char *flags, const char *t_convs)
 		s = ft_memchr(conv,flgs[ft_strlen(flgs) - 1], ft_strlen(conv)) + 1;
 	else 
 		s = conv;
-	while (ft_isdigit(s[i]) && s[i] != '.' && !ft_memchr(t_convs,s[i],ft_strlen(t_convs)))
+	i = 0;
+	while (ft_isdigit(s[i]))
 		i++;
-	printf("i = %d\n",i);
 	if (i > 0)
 	{
 		res = (char *)malloc(sizeof(char) * (i + 1));
@@ -130,20 +130,47 @@ char	toupper_mapi(unsigned int i, char c)
 	return (ft_toupper(c));
 }
 
-char	*process_type_spec(char *conv, va_list args) // type specifier
+char *get_arg_value(char t_conv, va_list args)
 {
 	char *res;
-	char c;
+
+	if (t_conv == 'c')
+	{
+		res = ft_calloc(2 ,1);
+		res[0] = va_arg(args, int);
+	}
+	else if (t_conv == 'd' || t_conv == 'i')
+	{
+		res = ft_itoa(va_arg(args, int));
+	}
+	else if (t_conv == 'p' || t_conv == 'x' || t_conv == 'X')
+	{
+		res = ft_itoa_base(va_arg(args, int),"0123456789abcdef");
+		res = ft_strjoin("0x",res);
+		if (t_conv == 'X')
+			res = ft_strmapi(res, toupper_mapi);
+	}
+	else if (t_conv == 's')
+		res = va_arg(args, char *);
+	else if (t_conv == '%')
+		return(ft_strdup("%"));
+	return(res);
+}
+
+char	*process_arg_value(char *arg, char *conv, va_list args) 
+{
+	char *res;
+	char t_conv;
 	
 	char *flags;
 	char *min_width;
 	char *precision;
 	
-	c = conv[strlen(conv) - 1];
+	t_conv = conv[strlen(conv) - 1]; //type specifier
 	
-	flags = get_flags(conv, "0-");
-	precision = get_precision(conv, "cspdiuxX");
-	min_width = get_min_width(conv, "0-", "cspdiuxX");
+	flags = get_flags(conv, "0-"); //flags 
+	precision = get_precision(conv, "cspdiuxX"); //precision
+	min_width = get_min_width(conv, "0-", "cspdiuxX"); //min_width
 
 	if (flags)
 		printf("\nflags = %s\n", flags);
@@ -152,30 +179,7 @@ char	*process_type_spec(char *conv, va_list args) // type specifier
 	if (min_width)
 		printf("min-width = %s\n", min_width);
 
-	if (c == 'c')
-	{
-		res = ft_calloc(2 ,1);
-		res[0] = va_arg(args, int);
-	}
-	else if (c == 'd' || c == 'i')
-	{
-		res = ft_itoa(va_arg(args, int));
-	}
-	else if (c == 'p' || c == 'x' || c == 'X')
-	{
-		res = ft_itoa_base(va_arg(args, int),"0123456789abcdef");
-		res = ft_strjoin("0x",res);
-		if (c == 'X')
-		{
-			res = ft_strmapi(res, toupper_mapi);
-		}
-	}
-	else if (c == 's')
-	{
-		res = va_arg(args, char *);
-	}
-	else if (c == '%')
-		return(conv);
+	res = get_arg_value(t_conv, args);
 	return (res);
 }
 
@@ -183,6 +187,7 @@ int	ft_printf(const char *format, ...)
 {	
 	char *conv;
 	char *str;
+	char t_conv;
 	va_list		args;
 
 	va_start(args, format);
@@ -193,10 +198,11 @@ int	ft_printf(const char *format, ...)
 		if (*str == '%')
 		{
 			conv = get_conv(str , "cspdiuxX");
+			t_conv = conv[ft_strlen(conv) - 1];
 			if (conv)
 			{
-				ft_putstr_fd(process_type_spec(conv, args), 1);
-				str += ft_strlen(conv) + 1;	
+				ft_putstr_fd(get_arg_value(t_conv, args), 1);
+				str += ft_strlen(conv) + 1;
 			}
 			else
 				str++;
@@ -213,5 +219,5 @@ int main(int argc, char **argv)
 {
 	char *s;
 	
-	ft_printf("hello <%1212.123s>\n","yahy");
+	ft_printf("hello <%------123x>\n",456);
 }
