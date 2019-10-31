@@ -46,7 +46,7 @@ char *get_min_width(char *conv, const char *flags, const char *t_convs)
 	
 	flgs = get_flags(conv,flags);
 	if (flgs)
-		s = ft_memchr(conv,flgs[ft_strlen(flgs) - 1], ft_strlen(conv)) + 1;
+		s = ft_strnstr(conv, flgs, ft_strlen(conv)) + ft_strlen(flgs);
 	else 
 		s = conv;
 	i = 0;
@@ -157,7 +157,49 @@ char *get_arg_value(char t_conv, va_list args)
 	return(res);
 }
 
-char	*process_arg_value(char *arg, char *conv, va_list args) 
+char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
+{
+	char flag;
+	char *res;
+	char *ptr; 
+	size_t w;	// atoi(width)
+	size_t v_len; // value length
+
+	ptr = (char *)flags;
+	flag = 0;
+	//get flag
+	while (ptr && *ptr)
+	{
+		if (*ptr == '0')
+			flag = '0';
+		if(*ptr == '-')
+		{
+			flag = '-';
+			break;
+		}
+		ptr++;
+	}
+	w = ft_atoi(width);
+	v_len = ft_strlen(arg);
+	if (w < v_len)
+		return (arg);
+	res = (char *)malloc(sizeof(char) * (w + 1)); // needs protection
+	if(flag == '-')
+	{
+		ft_strlcpy(res, arg, w + 1);
+		ft_memset(res + v_len, ' ', w - v_len);
+	}
+	else
+	{	
+		// must add conditions for each type (negative int, hex 0x, etc ..)
+		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
+		ft_memset(res,(flag == '0' ? '0' : ' '), w - v_len);
+	}
+	
+	return (res);
+}
+
+char	*process_arg_value(char *conv, va_list args) 
 {
 	char *res;
 	char t_conv;
@@ -180,6 +222,9 @@ char	*process_arg_value(char *arg, char *conv, va_list args)
 		printf("min-width = %s\n", min_width);
 
 	res = get_arg_value(t_conv, args);
+	
+	printf("added padding <%s>\n", add_padding(res, t_conv, min_width, flags));
+
 	return (res);
 }
 
@@ -201,7 +246,7 @@ int	ft_printf(const char *format, ...)
 			t_conv = conv[ft_strlen(conv) - 1];
 			if (conv)
 			{
-				ft_putstr_fd(get_arg_value(t_conv, args), 1);
+				ft_putstr_fd(process_arg_value(conv, args), 1);		//get_arg_value(t_conv, args), 1);
 				str += ft_strlen(conv) + 1;
 			}
 			else
@@ -219,5 +264,5 @@ int main(int argc, char **argv)
 {
 	char *s;
 	
-	ft_printf("hello <%------123x>\n",456);
+	ft_printf("hello <%10x>\n",456);
 }
