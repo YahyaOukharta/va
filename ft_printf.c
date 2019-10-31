@@ -145,7 +145,7 @@ char *get_arg_value(char t_conv, va_list args)
 	}
 	else if (t_conv == 'p' || t_conv == 'x' || t_conv == 'X')
 	{
-		res = ft_itoa_base(va_arg(args, int),"0123456789abcdef");
+		res = ft_itoa_base(va_arg(args, int),"0123456789abcdef"); // negative case
 		res = ft_strjoin("0x",res);
 		if (t_conv == 'X')
 			res = ft_strmapi(res, toupper_mapi);
@@ -195,7 +195,25 @@ char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
 		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
 		ft_memset(res,(flag == '0' ? '0' : ' '), w - v_len);
 	}
-	
+	res[w] = '\0';
+	return (res);
+}
+
+char	*add_precision(char *arg, char t_conv, char *precision) // precision goes first
+{
+	size_t	p;	//atoi(p)
+	size_t	v_len;   //value length
+	char 	*res;		
+	int size;
+
+	if (!precision || t_conv != 's' || t_conv == 'c')
+		return (arg);
+	p = ft_atoi(precision);
+	v_len = ft_strlen(arg);
+	size = (p < v_len ? p : v_len);
+	res = (char *)malloc(sizeof(char) * size + 1); 
+	ft_memcpy(res, arg, size);
+	res[size] = '\0';
 	return (res);
 }
 
@@ -223,8 +241,11 @@ char	*process_arg_value(char *conv, va_list args)
 
 	res = get_arg_value(t_conv, args);
 	
+	printf("added precision <%s>\n", add_precision(res, t_conv, precision));
 	printf("added padding <%s>\n", add_padding(res, t_conv, min_width, flags));
-
+	
+	//res = add_precision(res, t_conv, precision);
+	//res = add_padding(res, t_conv, min_width, flags);
 	return (res);
 }
 
@@ -264,5 +285,6 @@ int main(int argc, char **argv)
 {
 	char *s;
 	
-	ft_printf("hello <%10x>\n",456);
+	ft_printf("hello <%11.12d>\n\n",12345);
+	printf("hello <%11.12d>\n",12345);
 }
