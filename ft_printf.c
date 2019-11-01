@@ -79,7 +79,7 @@ char *get_precision(char *conv, const char *t_convs )
 		i++;
 		s++;
 	}
-	if (i == 0 || !ft_memchr(t_convs, *s, ft_strlen(t_convs)))
+	if (!ft_memchr(t_convs, *s, ft_strlen(t_convs)))
 		return (0);
 	res = malloc(sizeof(char) * (i + 1));
 	ft_memcpy(res, dot + 1, i);
@@ -151,7 +151,11 @@ char *get_arg_value(char t_conv, va_list args)
 			res = ft_strmapi(res, toupper_mapi);
 	}
 	else if (t_conv == 's')
+	{
 		res = va_arg(args, char *);
+		if (!res)
+			return (ft_strdup("(null)"));
+	}
 	else if (t_conv == '%')
 		return(ft_strdup("%"));
 	return(res);
@@ -206,15 +210,53 @@ char	*add_precision(char *arg, char t_conv, char *precision) // precision goes f
 	char 	*res;		
 	int size;
 
-	if (!precision || t_conv != 's' || t_conv == 'c')
+	if (!precision || t_conv == 'c')
 		return (arg);
 	p = ft_atoi(precision);
+	if (!p && t_conv == 's')
+		return (ft_strdup(""));
 	v_len = ft_strlen(arg);
-	size = (p < v_len ? p : v_len);
-	res = (char *)malloc(sizeof(char) * size + 1); 
-	ft_memcpy(res, arg, size);
-	res[size] = '\0';
+	if (t_conv == 's')
+	{
+		size = (p < v_len ? p : v_len);
+		res = (char *)malloc(sizeof(char) * size + 1); 
+		ft_memcpy(res, arg, size);
+		res[size] = '\0';
+	}
+	else
+	{
+		return (add_padding(arg, t_conv, precision, "0"));
+	}
 	return (res);
+}
+
+char* take_out(char *flgs, char f)
+{
+	int i;
+	char *p;
+	i = 0;
+	p = flgs;
+	while(*p)
+	{
+		if(*p != f)
+			i++;
+		p++;
+	}
+	if (i == ft_strlen(flgs))
+		return (flgs);
+	p = (char *)malloc(sizeof(char) * (i + 1));
+	i = 0;
+	while(*flgs)
+	{
+		if(*flgs != f)
+		{
+			p[i] = *flgs;
+			i++;
+		}
+		flgs++;
+	}
+	p[i] = '\0';
+	return (p);
 }
 
 char	*process_arg_value(char *conv, va_list args) 
@@ -232,21 +274,34 @@ char	*process_arg_value(char *conv, va_list args)
 	precision = get_precision(conv, "cspdiuxX"); //precision
 	min_width = get_min_width(conv, "0-", "cspdiuxX"); //min_width
 
-	if (flags)
+/*	if (flags)
 		printf("\nflags = %s\n", flags);
+
 	if (precision)
 		printf("precision = %s\n", precision);
+
 	if (min_width)
 		printf("min-width = %s\n", min_width);
-
+*/
 	res = get_arg_value(t_conv, args);
+	//printf("%s\n",res);
+	//printf("added precision <%s>\n", add_precision(res, t_conv, precision));
+	//printf("added padding <%s>\n", add_padding(res, t_conv, min_width, flags));
 	
-	printf("added precision <%s>\n", add_precision(res, t_conv, precision));
-	printf("added padding <%s>\n", add_padding(res, t_conv, min_width, flags));
-	
-	//res = add_precision(res, t_conv, precision);
-	//res = add_padding(res, t_conv, min_width, flags);
+	if (precision)
+		res = add_precision(res, t_conv, precision);
+	if (min_width)
+	{	
+		if (precision && flags && t_conv != 's')
+		{
+			//printf("before = %s ;",flags);
+			flags = take_out(flags,'0');
+			//printf(" after = %s ;\n",flags);
+		}
+		res = add_padding(res, t_conv, min_width, flags);
+	}
 	return (res);
+
 }
 
 int	ft_printf(const char *format, ...)
@@ -281,10 +336,12 @@ int	ft_printf(const char *format, ...)
 	}
 	return (1);
 }
+
 int main(int argc, char **argv)
 {
 	char *s;
-	
-	ft_printf("hello <%11.12d>\n\n",12345);
-	printf("hello <%11.12d>\n",12345);
+
+
+	ft_printf("hello <%012d>   \n",-123);//"abcdef");
+	printf("hello <%012d>   \n",-123);//"abcdef");
 }
