@@ -145,9 +145,10 @@ char *get_arg_value(char t_conv, va_list args)
 	}
 	else if (t_conv == 'p' || t_conv == 'x' || t_conv == 'X')
 	{
-		res = ft_itoa_base(va_arg(args, int),"0123456789abcdef"); // negative case
-		res = ft_strjoin("0x",res);
-		if (t_conv == 'X')
+		res = ft_itoa_base(va_arg(args, int),"012345789abcdef"); // negative case
+		if(t_conv == 'p')
+			res = ft_strjoin("0x",res);
+		if(t_conv == 'X')
 			res = ft_strmapi(res, toupper_mapi);
 	}
 	else if (t_conv == 's')
@@ -159,6 +160,15 @@ char *get_arg_value(char t_conv, va_list args)
 	else if (t_conv == '%')
 		return(ft_strdup("%"));
 	return(res);
+}
+
+void	ft_swap(char *a, char *b)
+{
+	char tmp;
+
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
 }
 
 char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
@@ -198,6 +208,11 @@ char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
 		// must add conditions for each type (negative int, hex 0x, etc ..)
 		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
 		ft_memset(res,(flag == '0' ? '0' : ' '), w - v_len);
+		if (ft_strchr("diu", t_conv) && ft_atoi(arg) < 0)
+			ft_swap(res, res + w - v_len);
+		else if(ft_strchr("p", t_conv))
+			ft_swap(res + 1, res + w - v_len + 1);
+
 	}
 	res[w] = '\0';
 	return (res);
@@ -230,7 +245,7 @@ char	*add_precision(char *arg, char t_conv, char *precision) // precision goes f
 	return (res);
 }
 
-char* take_out(char *flgs, char f)
+char* take_out(char *flgs, char f)  //create a new string without any occurence of the specified character
 {
 	int i;
 	char *p;
@@ -294,9 +309,7 @@ char	*process_arg_value(char *conv, va_list args)
 	{	
 		if (precision && flags && t_conv != 's')
 		{
-			//printf("before = %s ;",flags);
 			flags = take_out(flags,'0');
-			//printf(" after = %s ;\n",flags);
 		}
 		res = add_padding(res, t_conv, min_width, flags);
 	}
@@ -308,11 +321,13 @@ int	ft_printf(const char *format, ...)
 {	
 	char *conv;
 	char *str;
+	char *out;
 	char t_conv;
+	int i;
 	va_list		args;
 
 	va_start(args, format);
-
+	i = 0;
 	str = (char *)format;
 	while (*str)
 	{
@@ -322,26 +337,31 @@ int	ft_printf(const char *format, ...)
 			t_conv = conv[ft_strlen(conv) - 1];
 			if (conv)
 			{
-				ft_putstr_fd(process_arg_value(conv, args), 1);		//get_arg_value(t_conv, args), 1);
+				out = process_arg_value(conv, args);
+				ft_putstr_fd(out, 1);		//get_arg_value(t_conv, args), 1);
 				str += ft_strlen(conv) + 1;
+				i += ft_strlen(out);
 			}
 			else
+			{
+				//i++;
 				str++;
+			}
 		}
 		else
 		{
 			ft_putchar_fd(*str, 1);
+			i++;
 			str++;
 		}
 	}
-	return (1);
+	return (i);
 }
 
 int main(int argc, char **argv)
 {
 	char *s;
 
-
-	ft_printf("hello <%012d>   \n",-123);//"abcdef");
-	printf("hello <%012d>   \n",-123);//"abcdef");
+	ft_printf("<%p>\n\n",1567);
+	printf("<%p>\n",1567);
 }
