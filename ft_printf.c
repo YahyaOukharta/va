@@ -12,6 +12,7 @@
 
 #include "libft.h"
 #include <stdarg.h>
+#include <stdio.h>
 
 char *get_flags(char *conv, const char *flags) // flags
 {
@@ -50,8 +51,11 @@ char *get_min_width(char *conv, const char *flags, const char *t_convs)
 	else 
 		s = conv;
 	i = 0;
-	while (ft_isdigit(s[i]))
+	while (ft_isdigit(s[i]) || s[i] == '*')
 		i++;
+
+	if ((res = ft_memchr(s, '*', i)) && i != 1)
+		return (0);
 	if (i > 0)
 	{
 		res = (char *)malloc(sizeof(char) * (i + 1));
@@ -74,15 +78,14 @@ char *get_precision(char *conv, const char *t_convs )
 		return (0);
 	i = 0;
 	s = dot + 1;
-	while (ft_isdigit(*s))
-	{
+	while (ft_isdigit(s[i]) || s[i] == '*')
 		i++;
-		s++;
-	}
-	if (!ft_memchr(t_convs, *s, ft_strlen(t_convs)))
+	if ((res = ft_memchr(s, '*', i)) && i != 1)
+		return (0);
+	if (!ft_memchr(t_convs, s[i], ft_strlen(t_convs)))
 		return (0);
 	res = malloc(sizeof(char) * (i + 1));
-	ft_memcpy(res, dot + 1, i);
+	ft_memcpy(res, s, i);
 	res[i] = '\0';
 	return (res);
 }
@@ -245,7 +248,7 @@ char	*add_precision(char *arg, char t_conv, char *precision) // precision goes f
 	return (res);
 }
 
-char* take_out(char *flgs, char f)  //create a new string without any occurence of the specified character
+char	*take_out(char *flgs, char f)  //create a new string without any occurence of the specified character
 {
 	int i;
 	char *p;
@@ -291,13 +294,13 @@ char	*process_arg_value(char *conv, va_list args)
 
 /*	if (flags)
 		printf("\nflags = %s\n", flags);
-
+*/
 	if (precision)
 		printf("precision = %s\n", precision);
 
 	if (min_width)
 		printf("min-width = %s\n", min_width);
-*/
+
 	res = get_arg_value(t_conv, args);
 	//printf("%s\n",res);
 	//printf("added precision <%s>\n", add_precision(res, t_conv, precision));
@@ -362,6 +365,6 @@ int main(int argc, char **argv)
 {
 	char *s;
 
-	ft_printf("<%p>\n\n",1567);
-	printf("<%p>\n",1567);
+	ft_printf("<%*.*d>\n\n", 12,1567);
+	//printf("<%*d>\n", 12,1567 );
 }
