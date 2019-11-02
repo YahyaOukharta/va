@@ -14,6 +14,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+int	get_star_param(va_list args)
+{
+	return (ft_itoa(va_arg(args, int)));
+}
+
 char *get_flags(char *conv, const char *flags) // flags
 {
 	int i;
@@ -196,6 +201,7 @@ char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
 		}
 		ptr++;
 	}
+	//w = (ft_strncmp(width, "*", ft_strlen(width)) ? ft_atoi(width) : get_star_param(args));
 	w = ft_atoi(width);
 	v_len = ft_strlen(arg);
 	if (w < v_len)
@@ -301,19 +307,24 @@ char	*process_arg_value(char *conv, va_list args)
 	if (min_width)
 		printf("min-width = %s\n", min_width);
 
+
+	if (min_width && ft_strncmp(min_width, "*", ft_strlen(min_width)))
+		min_width = get_star_param(args);
+	if (precision && ft_strncmp(precision, "*", ft_strlen(precision)))
+		precision = get_star_param(args);
+
 	res = get_arg_value(t_conv, args);
 	//printf("%s\n",res);
 	//printf("added precision <%s>\n", add_precision(res, t_conv, precision));
 	//printf("added padding <%s>\n", add_padding(res, t_conv, min_width, flags));
 	
-	if (precision)
+	if (precision){
 		res = add_precision(res, t_conv, precision);
+	}
 	if (min_width)
 	{	
 		if (precision && flags && t_conv != 's')
-		{
 			flags = take_out(flags,'0');
-		}
 		res = add_padding(res, t_conv, min_width, flags);
 	}
 	return (res);
@@ -365,6 +376,6 @@ int main(int argc, char **argv)
 {
 	char *s;
 
-	ft_printf("<%*.*d>\n\n", 12,1567);
-	//printf("<%*d>\n", 12,1567 );
+	ft_printf("<%*.*d>\n\n", 12,1567); // must add utoa later unsigned int to ascii
+	//printf("<%*d>\n", 12,1567 ); //work on '*'
 }
