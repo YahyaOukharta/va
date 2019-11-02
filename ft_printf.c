@@ -14,7 +14,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-int	get_star_param(va_list args)
+char*	get_star_param(va_list args)
 {
 	return (ft_itoa(va_arg(args, int)));
 }
@@ -151,9 +151,13 @@ char *get_arg_value(char t_conv, va_list args)
 	{
 		res = ft_itoa(va_arg(args, int));
 	}
+	else if (t_conv == 'u')
+	{
+		res = ft_utoa(va_arg(args,unsigned  int));
+	}
 	else if (t_conv == 'p' || t_conv == 'x' || t_conv == 'X')
 	{
-		res = ft_itoa_base(va_arg(args, int),"012345789abcdef"); // negative case
+		res = ft_itoa_base(va_arg(args, int),"0123456789abcdef"); // negative case
 		if(t_conv == 'p')
 			res = ft_strjoin("0x",res);
 		if(t_conv == 'X')
@@ -217,7 +221,7 @@ char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
 		// must add conditions for each type (negative int, hex 0x, etc ..)
 		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
 		ft_memset(res,(flag == '0' ? '0' : ' '), w - v_len);
-		if (ft_strchr("diu", t_conv) && ft_atoi(arg) < 0)
+		if (ft_strchr("di", t_conv) && ft_atoi(arg) < 0)
 			ft_swap(res, res + w - v_len);
 		else if(ft_strchr("p", t_conv))
 			ft_swap(res + 1, res + w - v_len + 1);
@@ -300,19 +304,25 @@ char	*process_arg_value(char *conv, va_list args)
 
 /*	if (flags)
 		printf("\nflags = %s\n", flags);
-*/
+
 	if (precision)
 		printf("precision = %s\n", precision);
 
 	if (min_width)
 		printf("min-width = %s\n", min_width);
+*/
 
-
-	if (min_width && ft_strncmp(min_width, "*", ft_strlen(min_width)))
+	if (min_width && !ft_strncmp(min_width, "*", ft_strlen(min_width)))
 		min_width = get_star_param(args);
-	if (precision && ft_strncmp(precision, "*", ft_strlen(precision)))
+	
+	if (precision && !ft_strncmp(precision, "*", ft_strlen(precision)))
 		precision = get_star_param(args);
+/*	if (precision)
+		printf("precision = %s\n", precision);
 
+	if (min_width)
+		printf("min-width = %s\n", min_width);
+*/
 	res = get_arg_value(t_conv, args);
 	//printf("%s\n",res);
 	//printf("added precision <%s>\n", add_precision(res, t_conv, precision));
@@ -357,10 +367,7 @@ int	ft_printf(const char *format, ...)
 				i += ft_strlen(out);
 			}
 			else
-			{
-				//i++;
 				str++;
-			}
 		}
 		else
 		{
@@ -376,6 +383,6 @@ int main(int argc, char **argv)
 {
 	char *s;
 
-	ft_printf("<%*.*d>\n\n", 12,1567); // must add utoa later unsigned int to ascii
-	//printf("<%*d>\n", 12,1567 ); //work on '*'
+	ft_printf("<%.*p>\n\n",12,7295); //fix precision for hex values
+	printf("<%.*p>\n\n",12,7295);
 }

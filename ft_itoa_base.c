@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include "libft.h"
 
-size_t	count_digits(long n, size_t base)
+size_t	count_digits_base(long n, size_t base)
 {
 	size_t	i;
 
@@ -43,7 +43,7 @@ char	*ft_itoa_base(int n, const char *base)
 		nbr *= -1;
 		negative = 1;
 	}
-	n_digits = count_digits(nbr, ft_strlen(base));
+	n_digits = count_digits_base(nbr, ft_strlen(base));
 	res = (char *)malloc(sizeof(char) * (n_digits + negative + 1));
 	if (!res)
 		return (0);
