@@ -6,7 +6,7 @@
 /*   By: youkhart <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 14:17:00 by youkhart          #+#    #+#             */
-/*   Updated: 2019/10/29 05:26:07 by youkhart         ###   ########.fr       */
+/*   Updated: 2019/11/02 20:55:58 by youkhart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,5 @@ typedef	struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+char	*add_padding(char *arg, char t_conv, char *width, const char *flags);
 #endif

@@ -57,15 +57,15 @@ char *get_percent_sign(va_list args) // X
     return (s);
 }
 
-void    init_dispatcher(void)
+void    init_t_dispatcher(void)
 {
-    d[0] = get_char_arg;
-    d[1] = get_string_arg;
-    d[2] = get_pointer_arg;
-    d[3] = get_int_arg;
-    d[4] = get_int_arg;
-    d[5] = get_uint_arg;
-    d[6] = get_hex_arg;
-    d[7] = get_uppercase_hex_arg;
-    d[8] = get_percent_sign;
+    t_dispatcher[0] = get_char_arg;
+    t_dispatcher[1] = get_string_arg;
+    t_dispatcher[2] = get_pointer_arg;
+    t_dispatcher[3] = get_int_arg;
+    t_dispatcher[4] = get_int_arg;
+    t_dispatcher[5] = get_uint_arg;
+    t_dispatcher[6] = get_hex_arg;
+    t_dispatcher[7] = get_uppercase_hex_arg;
+    t_dispatcher[8] = get_percent_sign;
 }

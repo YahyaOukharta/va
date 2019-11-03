@@ -10,118 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include <stdarg.h>
-#include <stdio.h>
+#include "ft_printf.h"
 
 char*	get_star_param(va_list args)
 {
 	return (ft_itoa(va_arg(args, int)));
 }
 
-char *get_flags(char *conv, const char *flags) // flags
-{
-	int i;
-	char *s;
-	char *res;
-
-	s = conv;
-	i = 0;
-	while(ft_memchr(flags, *s, ft_strlen(flags)))
-	{
-		s++;
-		i++;
-	}
-	if (i > 0)
-	{
-		res = (char *)malloc(i + 1);
-		ft_memcpy(res, conv, i);
-		res[i] = '\0';
-	}
-	else
-		res = 0;
-	return (res);
-}
-
-char *get_min_width(char *conv, const char *flags, const char *t_convs)
-{
-	char *res;
-	int i;
-	char *flgs;
-	char *s;
-	
-	flgs = get_flags(conv,flags);
-	if (flgs)
-		s = ft_strnstr(conv, flgs, ft_strlen(conv)) + ft_strlen(flgs);
-	else 
-		s = conv;
-	i = 0;
-	while (ft_isdigit(s[i]) || s[i] == '*')
-		i++;
-
-	if ((res = ft_memchr(s, '*', i)) && i != 1)
-		return (0);
-	if (i > 0)
-	{
-		res = (char *)malloc(sizeof(char) * (i + 1));
-		ft_memcpy(res, s, i);
-		res[i] = '\0';
-		return (res);
-	}
-	return (0);
-}
-
-char *get_precision(char *conv, const char *t_convs )
-{
-	int		i;
-	char	*res;
-	char	*dot;
-	char	*s;
-
-	dot = ft_memchr(conv, '.',ft_strlen(conv));
-	if (!dot)
-		return (0);
-	i = 0;
-	s = dot + 1;
-	while (ft_isdigit(s[i]) || s[i] == '*')
-		i++;
-	if ((res = ft_memchr(s, '*', i)) && i != 1)
-		return (0);
-	if (!ft_memchr(t_convs, s[i], ft_strlen(t_convs)))
-		return (0);
-	res = malloc(sizeof(char) * (i + 1));
-	ft_memcpy(res, s, i);
-	res[i] = '\0';
-	return (res);
-}
-
-char *get_conv(char *start, const char *t_convs)
-{	
-	int len;
-	char *p;
-	char *conv;
-	p = start + 1;
-	len = 0;
-	while (*p && *p != '%' && !ft_isalpha(*p))
-	{
-		len++;
-		p++;
-	}
-	if(*p == '%')
-		return (strdup("%"));
-	if (!ft_memchr(t_convs, *p, ft_strlen(t_convs)))
-		return (0);
-	else
-	{
-		len++;
-		conv = (char *)malloc(len + 1);
-		ft_memcpy(conv, start + 1, len);
-		conv[len] = '\0';
-		return (conv);
-	}
-}
-
-int		index_of(char c, char *str)
+int		index_of(char c, const char *str)
 {
 	int i;
 
@@ -138,40 +34,15 @@ char	toupper_mapi(unsigned int i, char c)
 	return (ft_toupper(c));
 }
 
-char *get_arg_value(char t_conv, va_list args)
+char *get_arg_value( va_list args, char t_conv, const char* t_convs)
 {
-	char *res;
+	int index;
 
-	if (t_conv == 'c')
-	{
-		res = ft_calloc(2 ,1);
-		res[0] = va_arg(args, int);
-	}
-	else if (t_conv == 'd' || t_conv == 'i')
-	{
-		res = ft_itoa(va_arg(args, int));
-	}
-	else if (t_conv == 'u')
-	{
-		res = ft_utoa(va_arg(args,unsigned  int));
-	}
-	else if (t_conv == 'p' || t_conv == 'x' || t_conv == 'X')
-	{
-		res = ft_itoa_base(va_arg(args, int),"0123456789abcdef"); // negative case
-		if(t_conv == 'p')
-			res = ft_strjoin("0x",res);
-		if(t_conv == 'X')
-			res = ft_strmapi(res, toupper_mapi);
-	}
-	else if (t_conv == 's')
-	{
-		res = va_arg(args, char *);
-		if (!res)
-			return (ft_strdup("(null)"));
-	}
-	else if (t_conv == '%')
-		return(ft_strdup("%"));
-	return(res);
+	index = index_of(t_conv, t_convs);
+	if(index > -1)
+		return (t_dispatcher[index](args));
+	else
+		return (0);
 }
 
 void	ft_swap(char *a, char *b)
@@ -205,7 +76,6 @@ char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
 		}
 		ptr++;
 	}
-	//w = (ft_strncmp(width, "*", ft_strlen(width)) ? ft_atoi(width) : get_star_param(args));
 	w = ft_atoi(width);
 	v_len = ft_strlen(arg);
 	if (w < v_len)
@@ -221,7 +91,7 @@ char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
 		// must add conditions for each type (negative int, hex 0x, etc ..)
 		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
 		ft_memset(res,(flag == '0' ? '0' : ' '), w - v_len);
-		if (ft_strchr("di", t_conv) && ft_atoi(arg) < 0)
+		if (ft_strchr("diu", t_conv) && ft_atoi(arg) < 0)
 			ft_swap(res, res + w - v_len);
 		else if(ft_strchr("p", t_conv))
 			ft_swap(res + 1, res + w - v_len + 1);
@@ -231,30 +101,15 @@ char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
 	return (res);
 }
 
-char	*add_precision(char *arg, char t_conv, char *precision) // precision goes first
+char	*add_precision(char *arg, char t_conv, char *precision, const char *t_convs) // precision goes first
 {
-	size_t	p;	//atoi(p)
-	size_t	v_len;   //value length
-	char 	*res;		
-	int size;
+	char	*res;		
+	int		index;
 
-	if (!precision || t_conv == 'c')
+	if (!precision)
 		return (arg);
-	p = ft_atoi(precision);
-	if (!p && t_conv == 's')
-		return (ft_strdup(""));
-	v_len = ft_strlen(arg);
-	if (t_conv == 's')
-	{
-		size = (p < v_len ? p : v_len);
-		res = (char *)malloc(sizeof(char) * size + 1); 
-		ft_memcpy(res, arg, size);
-		res[size] = '\0';
-	}
-	else
-	{
-		return (add_padding(arg, t_conv, precision, "0"));
-	}
+	index = index_of(t_conv, t_convs);
+	res = p_dispatcher[index](arg, precision);
 	return (res);
 }
 
@@ -287,7 +142,7 @@ char	*take_out(char *flgs, char f)  //create a new string without any occurence 
 	return (p);
 }
 
-char	*process_arg_value(char *conv, va_list args) 
+char	*process_arg_value(char *conv, va_list args, const char *t_convs) 
 {
 	char *res;
 	char t_conv;
@@ -299,8 +154,8 @@ char	*process_arg_value(char *conv, va_list args)
 	t_conv = conv[strlen(conv) - 1]; //type specifier
 	
 	flags = get_flags(conv, "0-"); //flags 
-	precision = get_precision(conv, "cspdiuxX"); //precision
-	min_width = get_min_width(conv, "0-", "cspdiuxX"); //min_width
+	precision = get_precision(conv, t_convs); //precision
+	min_width = get_min_width(conv, "0-", t_convs); //min_width
 
 /*	if (flags)
 		printf("\nflags = %s\n", flags);
@@ -317,19 +172,20 @@ char	*process_arg_value(char *conv, va_list args)
 	
 	if (precision && !ft_strncmp(precision, "*", ft_strlen(precision)))
 		precision = get_star_param(args);
+
 /*	if (precision)
 		printf("precision = %s\n", precision);
 
 	if (min_width)
 		printf("min-width = %s\n", min_width);
 */
-	res = get_arg_value(t_conv, args);
+	res = get_arg_value(args, t_conv, t_convs);
 	//printf("%s\n",res);
 	//printf("added precision <%s>\n", add_precision(res, t_conv, precision));
 	//printf("added padding <%s>\n", add_padding(res, t_conv, min_width, flags));
 	
 	if (precision){
-		res = add_precision(res, t_conv, precision);
+		res = add_precision(res, t_conv, precision, t_convs);
 	}
 	if (min_width)
 	{	
@@ -349,6 +205,8 @@ int	ft_printf(const char *format, ...)
 	char t_conv;
 	int i;
 	va_list		args;
+	init_t_dispatcher();
+	init_p_dispatcher();
 
 	va_start(args, format);
 	i = 0;
@@ -357,11 +215,11 @@ int	ft_printf(const char *format, ...)
 	{
 		if (*str == '%')
 		{
-			conv = get_conv(str , "cspdiuxX");
+			conv = get_conv(str , "cspdiuxX%");
 			t_conv = conv[ft_strlen(conv) - 1];
 			if (conv)
 			{
-				out = process_arg_value(conv, args);
+				out = process_arg_value(conv, args, "cspdiuxX%");
 				ft_putstr_fd(out, 1);		//get_arg_value(t_conv, args), 1);
 				str += ft_strlen(conv) + 1;
 				i += ft_strlen(out);
@@ -383,6 +241,6 @@ int main(int argc, char **argv)
 {
 	char *s;
 
-	ft_printf("<%.*p>\n\n",12,7295); //fix precision for hex values
-	printf("<%.*p>\n\n",12,7295);
+	ft_printf("<%-20.*s>\n",5,"Hedfdfdflo World!"); //fix precision for hex values
+	//printf("<%-4%//d>\n\n",5,7295);
 }
