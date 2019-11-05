@@ -4,7 +4,7 @@ all: $(NAME)
 
 $(NAME):
 	ar -x libft.a
-	gcc -c ft_printf.c ft_itoa_base.c ft_utoa.c get_specifiers/*.c type_convs/*.c precision/*.c min_width/*.c -L. -lft
+	gcc -c ft_printf.c get_specifiers/*.c type_convs/*.c precision/*.c min_width/*.c # -L. -lft
 	ar -rc libftprintf.a *.o 
 
 clean:

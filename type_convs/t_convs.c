@@ -19,7 +19,7 @@ char *get_string_arg(va_list args) // s
 
 char *get_pointer_arg(va_list args) // p
 {
-    return (ft_itoa_base(va_arg(args,int), "0123456789abcdef"));
+    return (ft_itoa_base(va_arg(args, long), "0123456789abcdef"));
 }
 
 char *get_dec_arg(va_list args) // d i

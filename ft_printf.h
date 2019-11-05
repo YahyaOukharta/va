@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 # define T_CONVS "cspdiuxX%"
+
 int ft_printf(const char *format, ...);
 void	ft_swap(char *a, char *b);
 #endif
