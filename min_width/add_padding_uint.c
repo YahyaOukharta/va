@@ -1,6 +1,6 @@
 #include "min_width.h"
 
-char	*add_padding_char(char *arg, char *width, const char *flags)
+char	*add_padding_uint(char *arg, char *width, const char *flags)
 {
 	char flag;
 	char *res;
@@ -9,7 +9,7 @@ char	*add_padding_char(char *arg, char *width, const char *flags)
 
 	flag = get_active_flag(flags);
 	w = ft_atoi(width);
-	v_len = 1;
+	v_len = ft_strlen(arg);
 	if (w <= v_len)
 		return (arg);
 	res = (char *)malloc(sizeof(char) * (w + 1)); // needs protection
@@ -21,7 +21,7 @@ char	*add_padding_char(char *arg, char *width, const char *flags)
 	else
 	{
 		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
-		ft_memset(res,' ', w - v_len);
+		ft_memset(res,(flag == '0' ? '0' : ' '), w - v_len);
 	}
 	res[w] = '\0';
 	return (res);

@@ -59,5 +59,4 @@ typedef	struct		s_list
 	struct s_list	*next;
 }					t_list;
 
-char	*add_padding(char *arg, char t_conv, char *width, const char *flags);
 #endif

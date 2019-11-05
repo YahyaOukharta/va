@@ -1,6 +1,5 @@
-#include <stdarg.h>
-#include "../libft.h"
 #include "t_convs.h"
+
 char *get_char_arg(va_list args) // c
 {
     char *s;
@@ -20,7 +19,7 @@ char *get_string_arg(va_list args) // s
 
 char *get_pointer_arg(va_list args) // p
 {
-    return (ft_itoa_base((int)va_arg(args,void *), "0123456789abcdef"));
+    return (ft_itoa_base(va_arg(args,int), "0123456789abcdef"));
 }
 
 char *get_dec_arg(va_list args) // d i

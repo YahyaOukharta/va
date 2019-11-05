@@ -55,50 +55,14 @@ void	ft_swap(char *a, char *b)
 }
 
 char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
-{
-	char flag;
+{	
+	int index;
 	char *res;
-	char *ptr; 
-	size_t w;	// atoi(width)
-	size_t v_len; // value length
 
-	ptr = (char *)flags;
-	flag = 0;
-	//get flag
-	while (ptr && *ptr)
-	{
-		if (*ptr == '0')
-			flag = '0';
-		if(*ptr == '-')
-		{
-			flag = '-';
-			break;
-		}
-		ptr++;
-	}
-	w = ft_atoi(width);
-	v_len = ft_strlen(arg);
-	if (w < v_len)
-		return (arg);
-	res = (char *)malloc(sizeof(char) * (w + 1)); // needs protection
-	if(flag == '-')
-	{
-		ft_strlcpy(res, arg, w + 1);
-		ft_memset(res + v_len, ' ', w - v_len);
-	}
-	else
-	{	
-		// must add conditions for each type (negative int, hex 0x, etc ..)
-		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
-		ft_memset(res,(flag == '0' ? '0' : ' '), w - v_len);
-		if (ft_strchr("diu", t_conv) && ft_atoi(arg) < 0)
-			ft_swap(res, res + w - v_len);
-		else if(ft_strchr("p", t_conv))
-			ft_swap(res + 1, res + w - v_len + 1);
-
-	}
-	res[w] = '\0';
+	index = index_of(t_conv, "cspdiuxX%");
+	res = w_dispatcher[index](arg, width, flags);
 	return (res);
+
 }
 
 char	*add_precision(char *arg, char t_conv, char *precision, const char *t_convs) // precision goes first
@@ -207,6 +171,7 @@ int	ft_printf(const char *format, ...)
 	va_list		args;
 	init_t_dispatcher();
 	init_p_dispatcher();
+	init_w_dispatcher();
 
 	va_start(args, format);
 	i = 0;
@@ -235,12 +200,4 @@ int	ft_printf(const char *format, ...)
 		}
 	}
 	return (i);
-}
-
-int main(int argc, char **argv)
-{
-	char *s;
-
-	ft_printf("<%-20.*s>\n",5,"Hedfdfdflo World!"); //fix precision for hex values
-	//printf("<%-4%//d>\n\n",5,7295);
 }

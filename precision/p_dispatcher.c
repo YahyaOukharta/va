@@ -1,5 +1,12 @@
 #include "precision.h"
 
+
+char	*add_precision_percent_sign(char *arg, char *precision)
+{
+    (void)precision;
+	return (arg);
+}
+
 void    init_p_dispatcher(void)
 {
     p_dispatcher[0] = add_precision_c;
@@ -10,5 +17,5 @@ void    init_p_dispatcher(void)
     p_dispatcher[5] = add_precision_uint;
     p_dispatcher[6] = add_precision_hex;
     p_dispatcher[7] = add_precision_hex;
-    //p_dispatcher[8] = get_percent_sign;
+    p_dispatcher[8] = add_precision_percent_sign;
 }

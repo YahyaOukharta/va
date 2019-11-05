@@ -7,13 +7,11 @@ char *get_conv(char *start, const char *t_convs)
 	char *conv;
 	p = start + 1;
 	len = 0;
-	while (*p && *p != '%' && !ft_isalpha(*p))
+	while (*p && !(ft_memchr(t_convs, *p, ft_strlen(t_convs))))
 	{
 		len++;
 		p++;
 	}
-	if(*p == '%')
-		return (ft_strdup("%"));
 	if (!ft_memchr(t_convs, *p, ft_strlen(t_convs)))
 		return (0);
 	else
