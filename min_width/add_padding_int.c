@@ -30,5 +30,6 @@ char	*add_padding_int(char *arg, char *width, const char *flags)
             ft_swap(res, res + w - v_len);
 	}
 	res[w] = '\0';
+	free(arg);
 	return (res);
 }

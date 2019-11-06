@@ -2,7 +2,11 @@
 
 char	*add_precision_hex(char *arg, char *precision)
 {
+	char *s;
+
 	if (!precision)
 		return (arg);
-	return (add_padding_hex(arg, precision, "0"));
+	s = add_padding_hex(arg, precision, "0");
+	//free(arg);
+	return (s);
 }

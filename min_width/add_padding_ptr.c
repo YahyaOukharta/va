@@ -18,5 +18,6 @@ char *add_padding_ptr(char *arg, char *width, const char *flags)
     }
     else
 		res = add_padding_hex(ft_strjoin("0x", arg), width, flags);
+	free(arg);
 	return (res);
 }

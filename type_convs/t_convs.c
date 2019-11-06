@@ -14,7 +14,7 @@ char *get_string_arg(va_list args) // s
     char *s;
 
     s = va_arg(args, char *);
-    return (s ? s : ft_strdup("(null)"));
+    return (s ? ft_strdup(s) : ft_strdup("(null)"));
 }
 
 char *get_pointer_arg(va_list args) // p

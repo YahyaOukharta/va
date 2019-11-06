@@ -2,7 +2,8 @@
 
 char	*add_padding_percent_sign(char *arg, char *width, const char *flags)
 {
-    (void)width;
+    char *s;
     (void)flags;
-	return (arg);
+    s = add_padding_string(arg,width,flags);
+	return (s);
 }

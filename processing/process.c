@@ -1,11 +1,10 @@
 #include "../ft_printf.h"
 
-char*	get_star_param(va_list args)
+char*	get_star_param(va_list args, char *old_param)
 {
 	char *res;
 	res = ft_itoa(va_arg(args, int));
-	if (ft_atoi(res) < 0)
-		res = ft_itoa(ft_atoi(res) * -1);
+	free(old_param);
 	return (res);
 }
 
@@ -45,6 +44,8 @@ char	*add_precision(char *arg, char t_conv, char *precision, const char *t_convs
 
 char	*process_arg_value(char *conv, va_list args, const char *t_convs, const char *flgs) 
 {
+	char *tmp;
+
 	char *res;
 	char t_conv;
 	
@@ -60,9 +61,16 @@ char	*process_arg_value(char *conv, va_list args, const char *t_convs, const cha
 	//printf("precision = %s\n",precision);
 
 	if (min_width && !ft_strncmp(min_width, "*", ft_strlen(min_width)))
-		min_width = get_star_param(args);
+	{
+		min_width = get_star_param(args, min_width);
+		if (ft_atoi(min_width) < 0){
+			min_width = ft_substr(min_width, 1, ft_strlen(min_width) - 1);
+			flags = ft_strdup("-");
+		}	
+	}
 	if (precision && !ft_strncmp(precision, "*", ft_strlen(precision)))
-		precision = get_star_param(args);
+		precision = get_star_param(args, precision);
+
 	res = get_arg_value(args, t_conv, t_convs);
 	
 	if (precision)
@@ -73,6 +81,9 @@ char	*process_arg_value(char *conv, va_list args, const char *t_convs, const cha
 			flags = take_out(flags,'0');
 		res = add_padding(res, t_conv, min_width, flags);
 	}
+	free(flags);
+	free(precision);
+	free(min_width);
 	return (res);
 
 }

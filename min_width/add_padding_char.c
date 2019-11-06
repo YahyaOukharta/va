@@ -25,6 +25,7 @@ char	*add_padding_char(char *arg, char *width, const char *flags)
 		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
 		ft_memset(res,' ', w - v_len);
 	}
+	free(arg);
 	res[w] = '\0';
 	return (res);
 }

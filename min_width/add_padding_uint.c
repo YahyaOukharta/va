@@ -26,5 +26,6 @@ char	*add_padding_uint(char *arg, char *width, const char *flags)
 		ft_memset(res,(flag == '0' ? '0' : ' '), w - v_len);
 	}
 	res[w] = '\0';
+	free(arg);
 	return (res);
 }

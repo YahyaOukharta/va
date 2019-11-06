@@ -21,7 +21,7 @@ fclean: clean
 re: fclean all
 
 c: re
-	gcc main.c -L. -lftprintf
+	gcc main.c -L. -lftprintf -g
 	rm -f *.o
 	./a.out
 

@@ -32,13 +32,15 @@ int	ft_printf(const char *format, ...)
 		if (*str == '%')
 		{
 			conv = get_conv(str , "cspdiuxX%");
-			t_conv = conv[ft_strlen(conv) - 1];
 			if (conv)
-			{
+			{	
+				t_conv = conv[ft_strlen(conv) - 1];
 				out = process_arg_value(conv, args, "cspdiuxX%" , "0-");
 				ft_putstr_fd(out, 1);		//get_arg_value(t_conv, args), 1);
 				str += ft_strlen(conv) + 1;
 				i += ft_strlen(out);
+				free(conv);
+				free(out);
 			}
 			else
 				str++;
@@ -50,5 +52,6 @@ int	ft_printf(const char *format, ...)
 			str++;
 		}
 	}
+	va_end(args);
 	return (i);
 }

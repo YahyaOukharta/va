@@ -8,8 +8,10 @@ char *get_min_width(char *conv, const char *flags, const char *t_convs)
 	char *s;
 	
 	flgs = get_flags(conv,flags);
-	if (flgs)
+	if (flgs){
 		s = ft_strnstr(conv, flgs, ft_strlen(conv)) + ft_strlen(flgs);
+		free(flgs);
+	}
 	else 
 		s = conv;
 	i = 0;
@@ -27,6 +29,5 @@ char *get_min_width(char *conv, const char *flags, const char *t_convs)
 		res[i] = '\0';
 		return (res);
 	}
-
 	return (0);
 }

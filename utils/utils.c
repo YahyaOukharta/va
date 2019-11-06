@@ -47,5 +47,6 @@ char	*take_out(char *flgs, char f)  //create a new string without any occurence 
 		flgs++;
 	}
 	p[i] = '\0';
+	free(flgs);
 	return (p);
 }
