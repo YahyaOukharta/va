@@ -2,16 +2,22 @@ NAME = libftprintf.a
 
 all: $(NAME)
 
-$(NAME):
+build_libft:
+	make -C libft/
+	cp libft/libft.a .
+
+$(NAME): build_libft
 	ar -x libft.a
-	gcc -c ft_printf.c get_specifiers/*.c type_convs/*.c precision/*.c min_width/*.c # -L. -lft
-	ar -rc libftprintf.a *.o 
+	gcc -c ft_printf.c processing/process.c  get_specifiers/*.c type_convs/*.c precision/*.c min_width/*.c  utils/*.c  -L. -lft
+	ar -rc libftprintf.a *.o
 
 clean:
 	rm -f *.o
+
 	
 fclean: clean
 	rm -f $(NAME)
+
 re: fclean all
 
 c: re

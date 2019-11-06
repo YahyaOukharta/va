@@ -19,7 +19,10 @@ char *get_string_arg(va_list args) // s
 
 char *get_pointer_arg(va_list args) // p
 {
-    return (ft_itoa_base(va_arg(args, long), "0123456789abcdef"));
+    char *s;
+
+    s = ft_itoa_base(va_arg(args, long), "0123456789abcdef");
+    return (s ? s : ft_strdup("(nil)"));
 }
 
 char *get_dec_arg(va_list args) // d i
@@ -39,12 +42,12 @@ char *get_uint_arg(va_list args) // u
 
 char *get_hex_arg(va_list args) // x
 {
-    return (ft_itoa_base(va_arg(args,int), "0123456789abcdef"));
+    return (ft_itoa_base(va_arg(args,long), "0123456789abcdef"));
 }
 
 char *get_uppercase_hex_arg(va_list args) // X
 {
-    return (ft_itoa_base(va_arg(args,int), "0123456789ABCDEF"));
+    return (ft_itoa_base(va_arg(args, long), "0123456789ABCDEF"));
 }
 
 char *get_percent_sign(va_list args) // X

@@ -12,6 +12,15 @@
 
 # define T_CONVS "cspdiuxX%"
 
-int ft_printf(const char *format, ...);
+int     ft_printf(const char *format, ...);
 void	ft_swap(char *a, char *b);
+int		index_of(char c, const char *str);
+char	*take_out(char *flgs, char f);
+
+char    *get_star_param(va_list args);
+char    *get_arg_value( va_list args, char t_conv, const char* t_convs);
+char	*add_padding(char *arg, char t_conv, char *width, const char *flags);
+char	*add_precision(char *arg, char t_conv, char *precision, const char *t_convs); // precision goes first
+char	*process_arg_value(char *conv, va_list args, const char *t_convs, const char *flgs);
+
 #endif
