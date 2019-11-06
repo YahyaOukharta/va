@@ -7,6 +7,8 @@ char	*add_padding_uint(char *arg, char *width, const char *flags)
 	size_t w;	// atoi(width)
 	size_t v_len; //length of arg 
 
+	if (!width)
+		return (arg);
 	flag = get_active_flag(flags);
 	w = ft_atoi(width);
 	v_len = ft_strlen(arg);

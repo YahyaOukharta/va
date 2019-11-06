@@ -14,6 +14,8 @@ char *get_precision(char *conv, const char *t_convs )
 	s = dot + 1;
 	while (ft_isdigit(s[i]) || s[i] == '*')
 		i++;
+	if (i == 0)
+		return (ft_strdup("0"));
 	if ((res = ft_memchr(s, '*', i)) && i != 1)
 		return (0);
 	if (!ft_memchr(t_convs, s[i], ft_strlen(t_convs)))

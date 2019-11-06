@@ -7,9 +7,13 @@ char	*add_padding_int(char *arg, char *width, const char *flags)
 	size_t w;	// atoi(width)
 	size_t v_len; //length of arg 
 
+	if (!width)
+		return (arg);
 	flag = get_active_flag(flags);
 	w = ft_atoi(width);
 	v_len = ft_strlen(arg);
+	if (!w && !ft_atoi(arg))
+		return (ft_strdup(""));
 	if (w <= v_len)
 		return (arg);
 	res = (char *)malloc(sizeof(char) * (w + 1)); // needs protection

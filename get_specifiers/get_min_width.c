@@ -13,9 +13,11 @@ char *get_min_width(char *conv, const char *flags, const char *t_convs)
 	else 
 		s = conv;
 	i = 0;
+
 	while (ft_isdigit(s[i]) || s[i] == '*')
 		i++;
-
+	if (i == 0)
+		return (0);
 	if ((res = ft_memchr(s, '*', i)) && i != 1)
 		return (0);
 	if (i > 0)
@@ -25,5 +27,6 @@ char *get_min_width(char *conv, const char *flags, const char *t_convs)
 		res[i] = '\0';
 		return (res);
 	}
+
 	return (0);
 }

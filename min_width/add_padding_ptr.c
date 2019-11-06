@@ -6,6 +6,8 @@ char *add_padding_ptr(char *arg, char *width, const char *flags)
     char    flag;
     int w;
 
+	if (!width)
+		return (ft_strjoin("0x",arg));
     flag = get_active_flag(flags);
     if (flag == '0')
 	{
