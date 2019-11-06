@@ -2,6 +2,9 @@
 
 char	*add_precision_c(char *arg, char *precision)
 {
+    char *s;
     (void)precision;
-	return (arg);
+	s = ft_strdup(arg);
+    free(arg);
+    return (s);
 }

@@ -23,9 +23,11 @@ char	*add_padding(char *arg, char t_conv, char *width, const char *flags)
 {	
 	int index;
 	char *res;
-
+	char *tmp;
 	index = index_of(t_conv, "cspdiuxX%");
+	tmp = arg;
 	res = w_dispatcher[index](arg, width, flags);
+	//free(tmp);
 	return (res);
 
 }
@@ -75,15 +77,13 @@ char	*process_arg_value(char *conv, va_list args, const char *t_convs, const cha
 	
 	if (precision)
 		res = add_precision(res, t_conv, precision, t_convs);
-	if (min_width || 1)
-	{	
-		if (precision && flags && t_conv != 's')
-			flags = take_out(flags,'0');
-		res = add_padding(res, t_conv, min_width, flags);
-	}
+
+	if (precision && flags && t_conv != 's')
+		flags = take_out(flags,'0');
+	res = add_padding(res, t_conv, min_width, flags);
+
 	free(flags);
 	free(precision);
 	free(min_width);
 	return (res);
-
 }

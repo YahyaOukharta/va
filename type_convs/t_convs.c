@@ -20,7 +20,6 @@ char *get_string_arg(va_list args) // s
 char *get_pointer_arg(va_list args) // p
 {
     char *s;
-
     s = ft_itoa_base(va_arg(args,unsigned long long), "0123456789abcdef");
     return (s ? s : ft_strdup("(nil)"));
 }
