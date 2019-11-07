@@ -12,38 +12,33 @@
 
 #include "ft_printf.h"
 
-int	ft_printf(const char *format, ...)
-{	
-	char *conv;
-	char *str;
-	char *out;
-	char t_conv;
-	int i;
-	va_list		args;
+void	init_ft_printf(char **str, int *i, const char *format)
+{
 	init_t_dispatcher();
 	init_p_dispatcher();
 	init_w_dispatcher();
+	*i = 0;
+	*str = (char *)format;
+}
+
+int		ft_printf(const char *format, ...)
+{
+	char	*conv;
+	char	*str;
+	char	*out;
+	int		i;
+	va_list	args;
 
 	va_start(args, format);
-	i = 0;
-	str = (char *)format;
+	init_ft_printf(&str, &i, format);
 	while (*str)
-	{
-		if (*str == '%')
+		if (*str == '%' && (conv = get_conv(str, "cspdiuxX%")))
 		{
-			conv = get_conv(str , "cspdiuxX%");
-			if (conv)
-			{	
-				t_conv = conv[ft_strlen(conv) - 1];
-				out = process_arg_value(conv, args, "cspdiuxX%" , "0-");
-				ft_putstr_fd(out, 1);		//get_arg_value(t_conv, args), 1);
-				str += ft_strlen(conv) + 1;
-				i += ft_strlen(out);
-				free(conv);
-				free(out);
-			}
-			else
-				str++;
+			out = process_arg(conv, args, "cspdiuxX%", "0-");
+			ft_putstr_fd(out, 1);
+			str += ft_strlen(conv) + 1;
+			i += ft_strlen(out);
+			free_specifiers(out, conv, NULL);
 		}
 		else
 		{
@@ -51,7 +46,6 @@ int	ft_printf(const char *format, ...)
 			i++;
 			str++;
 		}
-	}
 	va_end(args);
 	return (i);
 }

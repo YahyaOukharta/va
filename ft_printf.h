@@ -1,26 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: youkhart <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/07 16:54:38 by youkhart          #+#    #+#             */
+/*   Updated: 2019/11/07 16:54:39 by youkhart         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
+# include "libft.h"
+# include <stdarg.h>
+# include "t_convs.h"
+# include "get_specifiers.h"
+# include "precision.h"
+# include "min_width.h"
+# include <stdio.h>
 
-
-#include "libft.h"
-#include <stdarg.h>
-#include "type_convs/t_convs.h"
-#include "get_specifiers/get_specifiers.h"
-#include "precision/precision.h"
-#include "min_width/min_width.h"
-#include <stdio.h>
-
-# define T_CONVS "cspdiuxX%"
-
-int     ft_printf(const char *format, ...);
+int		ft_printf(const char *format, ...);
 void	ft_swap(char *a, char *b);
 int		index_of(char c, const char *str);
 char	*take_out(char *flgs, char f);
-
-char    *get_star_param(va_list args, char *old_param);
-char    *get_arg_value( va_list args, char t_conv, const char* t_convs);
+void	free_specifiers(char *flags, char *min_width, char *precision);
+char	*get_star_param(va_list args, char *old_param);
+char	*get_arg_value(va_list args, char t_conv, const char *t_convs);
+char	*add_precision(char *arg, char t_conv, char *p, const char *t_convs);
+char	*process_min_width(char *min_width, char **flags, va_list args);
 char	*add_padding(char *arg, char t_conv, char *width, const char *flags);
-char	*add_precision(char *arg, char t_conv, char *precision, const char *t_convs); // precision goes first
-char	*process_arg_value(char *conv, va_list args, const char *t_convs, const char *flgs);
+char	*process_arg(char *c, va_list a, const char *t_cvs, const char *flags);
 
 #endif
