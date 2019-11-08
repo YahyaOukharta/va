@@ -14,9 +14,14 @@
 
 char	*add_padding_percent_sign(char *arg, char *width, const char *flags)
 {
-	char	*s;
+	char	flag;
+	size_t	w;
+	size_t	v_len;
 
-	(void)flags;
-	s = add_padding_string(arg, width, flags);
-	return (s);
+	if (!width || ft_atoi(width) <= (int)ft_strlen(arg))
+		return (arg);
+	flag = get_active_flag(flags);
+	w = ft_atoi(width);
+	v_len = 1;
+	return (add_unsigned_padding(arg, w, v_len, flag));
 }

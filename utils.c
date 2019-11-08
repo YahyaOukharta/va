@@ -6,7 +6,7 @@
 /*   By: youkhart <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/06 22:26:10 by youkhart          #+#    #+#             */
-/*   Updated: 2019/11/06 22:33:50 by youkhart         ###   ########.fr       */
+/*   Updated: 2019/11/08 11:52:37 by youkhart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int		len_without(char *str, char f)
 char	*take_out(char *flgs, char f)
 {
 	int		i;
+	int		j;
 	char	*p;
 
 	i = len_without(flgs, f);
@@ -59,14 +60,15 @@ char	*take_out(char *flgs, char f)
 		return (flgs);
 	p = (char *)malloc(sizeof(char) * (i + 1));
 	i = 0;
-	while (*flgs)
+	j = 0;
+	while (flgs[j])
 	{
-		if (*flgs != f)
+		if (flgs[j] != f)
 		{
-			p[i] = *flgs;
+			p[i] = flgs[j];
 			i++;
 		}
-		flgs++;
+		j++;
 	}
 	p[i] = '\0';
 	free(flgs);

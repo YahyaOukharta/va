@@ -29,6 +29,13 @@ char	*process_min_width(char *min_width, char **flags, va_list args)
 	return (min_width);
 }
 
+char	*process_precision(char *precision, va_list args)
+{
+	if (precision && !ft_strncmp(precision, "*", ft_strlen(precision)))
+		precision = get_star_param(args, precision);
+	return (precision);
+}
+
 char	*process_arg(char *c, va_list args, const char *t_cs, const char *f)
 {
 	char *res;
@@ -42,8 +49,7 @@ char	*process_arg(char *c, va_list args, const char *t_cs, const char *f)
 	precision = get_precision(c, t_cs);
 	min_width = get_min_width(c, f);
 	min_width = process_min_width(min_width, &flags, args);
-	if (precision && !ft_strncmp(precision, "*", ft_strlen(precision)))
-		precision = get_star_param(args, precision);
+	precision = process_precision(precision, args);
 	res = get_arg_value(args, t_conv, t_cs);
 	if (precision)
 		res = add_precision(res, t_conv, precision, t_cs);

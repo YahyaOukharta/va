@@ -15,28 +15,20 @@
 char	*add_padding_hex(char *arg, char *width, const char *flags)
 {
 	char	flag;
-	char	*res;
 	size_t	w;
 	size_t	v_len;
 
-	if (!width || ft_atoi(width) <= (int)ft_strlen(arg))
+	if (!width)
 		return (arg);
 	flag = get_active_flag(flags);
 	w = ft_atoi(width);
 	v_len = ft_strlen(arg);
-	if (!(res = (char *)malloc(sizeof(char) * (w + 1))))
-		return (0);
-	if (flag == '-')
+	if (!w && !ft_atoi(arg))
 	{
-		ft_strlcpy(res, arg, w + 1);
-		ft_memset(res + v_len, ' ', w - v_len);
+		free(arg);
+		return (ft_strdup(""));
 	}
-	else
-	{
-		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
-		ft_memset(res, (flag == '0' ? '0' : ' '), w - v_len);
-	}
-	free(arg);
-	res[w] = '\0';
-	return (res);
+	if (w <= v_len)
+		return (arg);
+	return (add_unsigned_padding(arg, w, v_len, flag));
 }

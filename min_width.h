@@ -14,6 +14,7 @@
 # define MIN_WIDTH_H
 # include "ft_printf.h"
 
+char	*add_unsigned_padding(char *arg, size_t w, size_t v_len, char flag);
 char	*add_padding_char(char *arg, char *width, const char *flags);
 char	*add_padding_string(char *arg, char *width, const char *flags);
 char	*add_padding_ptr(char *arg, char *width, const char *flags);

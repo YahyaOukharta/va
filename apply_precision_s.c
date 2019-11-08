@@ -23,7 +23,10 @@ char	*add_precision_s(char *arg, char *precision)
 		return (arg);
 	p = ft_atoi(precision);
 	if (!p)
+	{
+		free(arg);
 		return (ft_strdup(""));
+	}
 	v_len = ft_strlen(arg);
 	size = (p < v_len ? p : v_len);
 	res = (char *)malloc(sizeof(char) * size + 1);

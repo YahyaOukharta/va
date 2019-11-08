@@ -28,6 +28,7 @@ void	free_specifiers(char *flags, char *min_width, char *precision);
 char	*get_star_param(va_list args, char *old_param);
 char	*get_arg_value(va_list args, char t_conv, const char *t_convs);
 char	*add_precision(char *arg, char t_conv, char *p, const char *t_convs);
+char	*process_precision(char *precision, va_list args);
 char	*process_min_width(char *min_width, char **flags, va_list args);
 char	*add_padding(char *arg, char t_conv, char *width, const char *flags);
 char	*process_arg(char *c, va_list a, const char *t_cvs, const char *flags);
