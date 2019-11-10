@@ -47,7 +47,7 @@ char	*add_precision(char *arg, char t_conv, char *p, const char *t_convs)
 	char	*res;
 	int		index;
 
-	if (!p)
+	if (!p || ft_atoi(p) < 0)
 		return (arg);
 	index = index_of(t_conv, t_convs);
 	res = g_p_dispatcher[index](arg, p);

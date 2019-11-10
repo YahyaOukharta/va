@@ -40,12 +40,5 @@ fclean: clean
 re: fclean all
 
 c: re
-	gcc main.c -L. -lftprintf -g
+	gcc main.c libftprintf.a -g
 	./a.out
-
-leak:
-	gcc main.c -L. -lftprintf -g
-	@valgrind --leak-check=full -s --log-file="OUT" ./a.out
-	@grep "definitely lost" OUT
-	@rm OUT
-	

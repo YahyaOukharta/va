@@ -19,7 +19,7 @@ char	*get_precision(char *conv, const char *t_convs)
 	char	*dot;
 	char	*s;
 
-	dot = ft_memchr(conv, '.', ft_strlen(conv));
+	dot = ft_strrchr(conv, '.');
 	if (!dot)
 		return (0);
 	i = 0;
