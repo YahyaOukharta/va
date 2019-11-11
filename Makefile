@@ -41,4 +41,10 @@ re: fclean all
 
 c: re
 	gcc main.c libftprintf.a -g
-	./a.out
+	./a.out | cat -e
+
+l: c
+	clear
+	valgrind --leak-check=full -s ./a.out
+	./a.out | cat -e
+

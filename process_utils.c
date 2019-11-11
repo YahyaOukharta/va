@@ -54,9 +54,17 @@ char	*add_precision(char *arg, char t_conv, char *p, const char *t_convs)
 	return (res);
 }
 
-void	free_specifiers(char *flags, char *min_width, char *precision)
+void	free_specifiers(char *flags, char *min_width, char *p, char **tab)
 {
+	if (tab)
+	{
+		free(tab[0]);
+		free(tab[1]);
+		free(tab[2]);
+		free(tab[3]);
+		free(tab);
+	}
 	free(flags);
-	free(precision);
+	free(p);
 	free(min_width);
 }

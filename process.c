@@ -21,8 +21,11 @@ char	*process_min_width(char *min_width, char **flags, va_list args)
 		min_width = get_star_param(args, min_width);
 		if (ft_atoi(min_width) < 0)
 		{
+			tmp = min_width;
 			min_width = ft_substr(min_width, 1, ft_strlen(min_width) - 1);
+			free(tmp);
 			tmp = ft_strdup("-");
+			free(*flags);
 			*flags = tmp;
 		}
 	}
@@ -36,26 +39,31 @@ char	*process_precision(char *precision, va_list args)
 	return (precision);
 }
 
-char	*process_arg(char *c, va_list args, const char *t_cs, const char *f)
+char	**process_arg(char *c, va_list args, const char *t_cs, const char *f)
 {
 	char *res;
-	char t_conv;
 	char *flags;
 	char *min_width;
 	char *precision;
+	char **tab;
 
-	t_conv = c[strlen(c) - 1];
+	tab = (char **)malloc(sizeof(char *) * (3 + 1));
+	tab[3] = 0;
 	flags = get_flags(c, f);
 	precision = get_precision(c, t_cs);
 	min_width = get_min_width(c, f);
 	min_width = process_min_width(min_width, &flags, args);
 	precision = process_precision(precision, args);
-	res = get_arg_value(args, t_conv, t_cs);
+	res = get_arg_value(args, c[strlen(c) - 1], t_cs);
+	tab[1] = ft_strdup(res);
 	if (precision)
-		res = add_precision(res, t_conv, precision, t_cs);
-	if (precision && flags && t_conv != 's')
+		res = add_precision(res, c[strlen(c) - 1], precision, t_cs);
+	if (precision && flags && c[strlen(c) - 1] != 's'
+			&& c[strlen(c) - 1] != 'c')
 		flags = take_out(flags, '0');
-	res = add_padding(res, t_conv, min_width, flags);
-	free_specifiers(flags, min_width, precision);
-	return (res);
+	res = add_padding(res, c[strlen(c) - 1], min_width, flags);
+	tab[2] = (flags ? ft_strdup(flags) : ft_strdup(""));
+	free_specifiers(flags, min_width, precision, NULL);
+	tab[0] = res;
+	return (tab);
 }

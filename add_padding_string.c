@@ -34,7 +34,7 @@ char	*add_padding_string(char *arg, char *width, const char *flags)
 	else
 	{
 		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
-		ft_memset(res, ' ', w - v_len);
+		ft_memset(res, (flag == '0' ? '0' : ' '), w - v_len);
 	}
 	res[w] = '\0';
 	free(arg);

@@ -21,11 +21,36 @@ void	init_ft_printf(char **str, int *i, const char *format)
 	*str = (char *)format;
 }
 
+void	print_null_before(char **tab, int *i)
+{
+	if (!*tab[1] && get_active_flag(tab[2]) == '-')
+	{
+		i++;
+		ft_putchar_fd('\0', 1);
+	}
+}
+
+void	print_null_after(char **tab, int *i)
+{
+	if (!*tab[1] && get_active_flag(tab[2]) != '-')
+	{
+		i++;
+		ft_putchar_fd('\0', 1);
+	}
+}
+
+void	print_output(char **out, int *i)
+{
+	print_null_before(out, i);
+	ft_putstr_fd(out[0], 1);
+	print_null_after(out, i);
+}
+
 int		ft_printf(const char *format, ...)
 {
 	char	*conv;
 	char	*str;
-	char	*out;
+	char	**out;
 	int		i;
 	va_list	args;
 
@@ -35,10 +60,10 @@ int		ft_printf(const char *format, ...)
 		if (*str == '%' && (conv = get_conv(str, "cspdiuxX%")))
 		{
 			out = process_arg(conv, args, "cspdiuxX%", "0-");
-			ft_putstr_fd(out, 1);
+			print_output(out, &i);
 			str += ft_strlen(conv) + 1;
-			i += ft_strlen(out);
-			free_specifiers(out, conv, NULL);
+			i += ft_strlen(out[0]);
+			free_specifiers(NULL, conv, NULL, out);
 		}
 		else
 		{

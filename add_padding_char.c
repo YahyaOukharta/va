@@ -19,12 +19,13 @@ char	*add_padding_char(char *arg, char *width, const char *flags)
 	size_t	w;
 	size_t	v_len;
 
-	if (!width || ft_atoi(width) <= (int)ft_strlen(arg))
+	if (!width || ft_atoi(width) <= 1)
 		return (arg);
 	flag = get_active_flag(flags);
-	w = ft_atoi(width);
-	v_len = 1;
-	res = (char *)malloc(sizeof(char) * (w + 1));
+	v_len = (!*arg ? 0 : 1);
+	w = (!*arg ? ft_atoi(width) - 1 : ft_atoi(width));
+	if (!(res = (char *)malloc(sizeof(char) * (w + 1))))
+		return (0);
 	if (flag == '-')
 	{
 		ft_strlcpy(res, arg, w + 1);
@@ -33,7 +34,7 @@ char	*add_padding_char(char *arg, char *width, const char *flags)
 	else
 	{
 		ft_strlcpy(res + (w - v_len), arg, v_len + 1);
-		ft_memset(res, ' ', w - v_len);
+		ft_memset(res, (flag == '0' ? '0' : ' '), w - v_len);
 	}
 	free(arg);
 	res[w] = '\0';
